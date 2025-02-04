@@ -9,7 +9,7 @@ require (
 	github.com/attestantio/go-eth2-client v0.19.9
 	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/confluentinc/confluent-kafka-go/v2 v2.3.0
-	github.com/ethereum/go-ethereum v1.14.11
+	github.com/ethereum/go-ethereum v1.14.13
 	github.com/flashbots/go-boost-utils v1.8.0
 	github.com/hashicorp/golang-lru v1.0.2
 	github.com/holiman/uint256 v1.3.1
@@ -37,7 +37,6 @@ require (
 	github.com/huandu/go-clone v1.6.0 // indirect
 	github.com/julienschmidt/httprouter v1.3.0 // indirect
 	github.com/kilic/bls12-381 v0.1.0 // indirect
-	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
