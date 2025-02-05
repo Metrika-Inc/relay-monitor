@@ -16,7 +16,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/cenkalti/backoff/v4"
-	"github.com/ethereum/go-ethereum/common/math"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/holiman/uint256"
 	"github.com/prometheus/client_golang/prometheus"
@@ -529,7 +528,7 @@ func computeBaseFee(parentGasTarget, parentGasUsed uint64, parentBaseFee *big.In
 		x.Mul(x, parentBaseFee)
 		x.Div(x, y)
 		x.Div(x, y.SetUint64(BaseFeeChangeDenominator))
-		baseFeeDelta := math.BigMax(x, bigOne)
+		baseFeeDelta := BigMax(x, bigOne)
 
 		x = x.Add(parentBaseFee, baseFeeDelta)
 		result.SetFromBig(x)
@@ -541,7 +540,7 @@ func computeBaseFee(parentGasTarget, parentGasUsed uint64, parentBaseFee *big.In
 		x.Div(x, y.SetUint64(BaseFeeChangeDenominator))
 
 		baseFee := x.Sub(parentBaseFee, x)
-		result.SetFromBig(math.BigMax(baseFee, bigZero))
+		result.SetFromBig(BigMax(baseFee, bigZero))
 	}
 	return result
 }
@@ -599,4 +598,12 @@ func (c *Client) GetPublicKeyForIndex(ctx context.Context, validatorIndex types.
 		return nil, fmt.Errorf("could not find public key for validator index %d", validatorIndex)
 	}
 	return key, nil
+}
+
+// BigMax returns the larger of x or y.
+func BigMax(x, y *big.Int) *big.Int {
+	if x.Cmp(y) < 0 {
+		return y
+	}
+	return x
 }
