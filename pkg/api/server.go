@@ -15,6 +15,7 @@ import (
 	"github.com/ralexstokes/relay-monitor/pkg/consensus"
 	"github.com/ralexstokes/relay-monitor/pkg/crypto"
 	"github.com/ralexstokes/relay-monitor/pkg/data"
+	"github.com/ralexstokes/relay-monitor/pkg/metrics"
 	"github.com/ralexstokes/relay-monitor/pkg/store"
 	"github.com/ralexstokes/relay-monitor/pkg/types"
 	"go.uber.org/zap"
@@ -317,6 +318,20 @@ func (s *Server) handleAlive(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (s *Server) ReadyMetric() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	err := s.consensusClient.FetchGenesis(ctx)
+	if err != nil {
+		metrics.IsReady.Set(0)
+		return
+	} else {
+		metrics.IsReady.Set(1)
+		return
+	}
+}
+
 func (s *Server) handleReady(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -334,7 +349,7 @@ func (s *Server) Run(ctx context.Context) error {
 	logger := s.logger.Sugar()
 	host := fmt.Sprintf("%s:%d", s.appConf.Host, s.appConf.Port)
 	logger.Infof("API server listening on %s", host)
-
+	s.ReadyMetric()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", get(s.handleFaultsRequest))
 	mux.HandleFunc(GetFaultEndpoint, get(s.handleFaultsRequest))

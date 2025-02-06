@@ -26,4 +26,10 @@ var (
 		Help:      "Histogram for time to get the bid",
 		Buckets:   prometheus.DefBuckets,
 	})
+
+	IsReady = promauto.NewGauge(prometheus.GaugeOpts{
+		Namespace: "relay_monitor",
+		Name:      "ready",
+		Help:      "Gauge if the instance is ready",
+	})
 )
